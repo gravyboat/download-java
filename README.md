@@ -11,12 +11,15 @@ You can include this as a function, or call it via the command line. It can also
  The following arguments are available:
 
 -u: Lets you set the java web page URL you're downloading from.
+
 -c: Allows a user to set the cookie in the event it changes.
+
 -i: The i586 (32 bit) directory to download the RPM to.
+
 -x: The x86_64 (64 bit) directory to download the RPM to.
+
 -r: Option that allows you to modify the rebuild command in the event you don't just want to update the repo with the default command.
 
-   :::text
    Copyright [2013] [Forrest Alvarez]
 
    Licensed under the Apache License, Version 2.0 (the "License");
