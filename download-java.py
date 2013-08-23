@@ -1,11 +1,5 @@
 #!/usr/bin/python
 
-'''
-Author: Forrest Alvarez
-Date: 2013/08/22
-
-'''
-
 import os
 import urllib
 from optparse import OptionParser
