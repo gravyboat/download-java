@@ -1,7 +1,7 @@
 download-java
 =============
 
-Python 2.4/2.6 script (test on RHEL) that can be used to download the java RPMs from Oracle's website, then rebuild the repo so the RPM is available.
+Python 2.4/2.6 script (tested on RHEL) that can be used to download the java RPMs from Oracle's website, then rebuild the repo so the RPM is available.
 
 Usage Example
 =============
@@ -20,7 +20,10 @@ You can include this as a function, or call it via the command line. It can also
 
 -r: Option that allows you to modify the rebuild command in the event you don't just want to update the repo with the default command.
 
-   Copyright [2013] [Forrest Alvarez]
+License
+==========
+
+   Copyright 2013 Forrest Alvarez
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
