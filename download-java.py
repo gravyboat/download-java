@@ -14,7 +14,7 @@ def update_jre_rpm(jre_web_page_url = "http://www.oracle.com/technetwork/java/ja
                     java_terms_cookie = "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F",
                     java_i586_directory = "/usr/src/redhat/RPMS/i586/",
                     java_x86_directory = "/usr/src/redhat/RPMS/x86_64/",
-                    rebuild_command = "repo-update"):
+                    rebuild_command = "createrepo --update"):
 
     # Create the directories if they do not exist.
     if not os.path.exists(java_x86_directory):
@@ -34,7 +34,6 @@ def update_jre_rpm(jre_web_page_url = "http://www.oracle.com/technetwork/java/ja
     # a.split("=")[1].strip().strip("{};").split(",")
     # wget_cmd = "blah %s blah"
     # if ... arg = thing elif arg = other thing
-    update_repo = False
     for download_details in url_list:
         rpm_url = download_details.split('"')[11]
         rpm_name = download_details.split('"')[11].split("/")[-1]
@@ -44,20 +43,18 @@ def update_jre_rpm(jre_web_page_url = "http://www.oracle.com/technetwork/java/ja
             os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (i586_rpm_path,
                                                                                             java_terms_cookie,
                                                                                             rpm_url))
-            update_repo = True
+            os.system(rebuild_command + ' ' + java_i586_directory)
         elif 'x64' in download_details and not os.path.exists(x86_rpm_path):
             os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (x86_rpm_path,
                                                                                             java_terms_cookie,
                                                                                             rpm_url))
-            update_repo = True
-    if update_repo == True:
-        os.system(rebuild_command)
+            os.system(rebuild_command + ' ' + java_x86_directory)
 
 def update_jdk_rpm(jdk_web_page_url = "http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html",
                     java_terms_cookie = "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F",
                     java_i586_directory = "/usr/src/redhat/RPMS/i586/",
                     java_x86_directory = "/usr/src/redhat/RPMS/x86_64/",
-                    rebuild_command = "repo-update"):
+                    rebuild_command = "createrepo --update"):
 
     # Create the directories if they do not exist.
     if not os.path.exists(java_x86_directory):
@@ -77,7 +74,6 @@ def update_jdk_rpm(jdk_web_page_url = "http://www.oracle.com/technetwork/java/ja
     # a.split("=")[1].strip().strip("{};").split(",")
     # wget_cmd = "blah %s blah"
     # if ... arg = thing elif arg = other thing
-    update_repo = False
     for download_details in url_list:
         rpm_url = download_details.split('"')[11]
         rpm_name = download_details.split('"')[11].split("/")[-1]
@@ -87,14 +83,13 @@ def update_jdk_rpm(jdk_web_page_url = "http://www.oracle.com/technetwork/java/ja
             os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (i586_rpm_path,
                                                                                             java_terms_cookie,
                                                                                             rpm_url))
-            update_repo = True
+            os.system(rebuild_command + ' ' + java_i586_directory)
         elif 'x64.rpm' in download_details and not os.path.exists(x86_rpm_path):
             os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (x86_rpm_path,
                                                                                             java_terms_cookie,
                                                                                             rpm_url))
-            update_repo = True
-    if update_repo == True:
-        os.system(rebuild_command)
+            os.system(rebuild_command + ' ' + java_i586_directory)
+
 
 if __name__ == '__main__':
     parser = OptionParser()
