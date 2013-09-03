@@ -1,11 +1,5 @@
 #!/usr/bin/python
 
-'''
-Author: Forrest Alvarez
-Date: 2013/08/23
-
-'''
-
 import os
 import urllib
 from optparse import OptionParser
@@ -97,12 +91,12 @@ if __name__ == '__main__':
                     "--jre_web_page_url",
                     dest = "jre_web_page_url",
                     default = "http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html",
-                    help = "The url of the java website.")
+                    help = "The url of the JRE website.")
     parser.add_option("-U",
                     "--jdk_web_page_url",
                     dest = "jdk_web_page_url",
                     default = "http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html",
-                    help = "The url of the java website.")
+                    help = "The url of the JDK website.")
     parser.add_option("-c",
                     "--java_terms_cookie",
                     dest = "java_terms_cookie",

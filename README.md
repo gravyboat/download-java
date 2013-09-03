@@ -10,7 +10,9 @@ You can include this as a function, or call it via the command line. It can also
 
  The following arguments are available:
 
--u: Lets you set the java web page URL you're downloading from.
+-u: Lets you set the URL of the JRE page you're downloading from.
+
+-U: Lets you set the URL of the JDK page you're downloading from.
 
 -c: Allows a user to set the cookie in the event it changes.
 
