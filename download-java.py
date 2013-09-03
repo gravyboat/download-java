@@ -1,10 +1,16 @@
 #!/usr/bin/python
 
+'''
+Author: Forrest Alvarez
+Date: 2013/08/23
+
+'''
+
 import os
 import urllib
 from optparse import OptionParser
 
-def update_java_rpm(java_web_page_url = "http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html",
+def update_jre_rpm(jre_web_page_url = "http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html",
                     java_terms_cookie = "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F",
                     java_i586_directory = "/usr/src/redhat/RPMS/i586/",
                     java_x86_directory = "/usr/src/redhat/RPMS/x86_64/",
@@ -18,7 +24,7 @@ def update_java_rpm(java_web_page_url = "http://www.oracle.com/technetwork/java/
 
     # Create our list, and parse the download urls so we have just the rpms.
     url_list = []
-    f = urllib.urlopen(java_web_page_url)
+    f = urllib.urlopen(jre_web_page_url)
     for line in f:
         if 'rpm' in line:
             url_list.append(line.split('=')[1])
@@ -28,7 +34,7 @@ def update_java_rpm(java_web_page_url = "http://www.oracle.com/technetwork/java/
     # a.split("=")[1].strip().strip("{};").split(",")
     # wget_cmd = "blah %s blah"
     # if ... arg = thing elif arg = other thing
-    update_repo = 0
+    update_repo = False
     for download_details in url_list:
         rpm_url = download_details.split('"')[11]
         rpm_name = download_details.split('"')[11].split("/")[-1]
@@ -38,21 +44,69 @@ def update_java_rpm(java_web_page_url = "http://www.oracle.com/technetwork/java/
             os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (i586_rpm_path,
                                                                                             java_terms_cookie,
                                                                                             rpm_url))
-            update_repo = 1
+            update_repo = True
         elif 'x64' in download_details and not os.path.exists(x86_rpm_path):
             os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (x86_rpm_path,
                                                                                             java_terms_cookie,
                                                                                             rpm_url))
-            update_repo = 1
-    if update_repo == 1:
+            update_repo = True
+    if update_repo == True:
+        os.system(rebuild_command)
+
+def update_jdk_rpm(jdk_web_page_url = "http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html",
+                    java_terms_cookie = "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F",
+                    java_i586_directory = "/usr/src/redhat/RPMS/i586/",
+                    java_x86_directory = "/usr/src/redhat/RPMS/x86_64/",
+                    rebuild_command = "repo-update"):
+
+    # Create the directories if they do not exist.
+    if not os.path.exists(java_x86_directory):
+        os.makedirs(java_x86_directory)
+    if not os.path.exists(java_i586_directory):
+        os.makedirs(java_i586_directory)
+
+    # Create our list, and parse the download urls so we have just the rpms.
+    url_list = []
+    f = urllib.urlopen(jdk_web_page_url)
+    for line in f:
+        if 'rpm' in line:
+            url_list.append(line.split('=')[1])
+
+    # Download our RPMs to the respective repo directories, then rebuild the repo.
+    # consider stripping the {}, then splitting on ',', and put that into a dict.
+    # a.split("=")[1].strip().strip("{};").split(",")
+    # wget_cmd = "blah %s blah"
+    # if ... arg = thing elif arg = other thing
+    update_repo = False
+    for download_details in url_list:
+        rpm_url = download_details.split('"')[11]
+        rpm_name = download_details.split('"')[11].split("/")[-1]
+        i586_rpm_path = os.path.join(java_i586_directory, rpm_name)
+        x86_rpm_path = os.path.join(java_x86_directory, rpm_name)
+        if 'i586.rpm' in download_details and not os.path.exists(i586_rpm_path):
+            os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (i586_rpm_path,
+                                                                                            java_terms_cookie,
+                                                                                            rpm_url))
+            update_repo = True
+        elif 'x64.rpm' in download_details and not os.path.exists(x86_rpm_path):
+            os.system("wget -O %s --no-cookies --no-check-certificate --header '%s' '%s'" % (x86_rpm_path,
+                                                                                            java_terms_cookie,
+                                                                                            rpm_url))
+            update_repo = True
+    if update_repo == True:
         os.system(rebuild_command)
 
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-u",
-                    "--java_web_page_url",
-                    dest = "java_web_page_url",
+                    "--jre_web_page_url",
+                    dest = "jre_web_page_url",
                     default = "http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html",
+                    help = "The url of the java website.")
+    parser.add_option("-U",
+                    "--jdk_web_page_url",
+                    dest = "jdk_web_page_url",
+                    default = "http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html",
                     help = "The url of the java website.")
     parser.add_option("-c",
                     "--java_terms_cookie",
@@ -76,8 +130,14 @@ if __name__ == '__main__':
                     help = "The command to rebuild your repository.")
     (options, args) = parser.parse_args()
 
-    update_java_rpm(options.java_web_page_url,
-                    options.java_terms_cookie,
-                    options.java_i586_directory,
-                    options.java_x86_directory,
-                    options.rebuild_command)
+    update_jre_rpm(options.jre_web_page_url,
+                options.java_terms_cookie,
+                options.java_i586_directory,
+                options.java_x86_directory,
+                options.rebuild_command)
+    
+    update_jdk_rpm(options.jdk_web_page_url,
+                options.java_terms_cookie,
+                options.java_i586_directory,
+                options.java_x86_directory,
+                options.rebuild_command)
